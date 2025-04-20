@@ -49,9 +49,9 @@ const getBorrowedBooks = async (req, res) => {
 // 4. Mark book as returned
 const returnBook = async (req, res) => {
   try {
-    const { borrowRequestId } = req.params;
+    const { id } = req.params; // Correct parameter name
 
-    const borrowRequest = await BorrowRequest.findById(borrowRequestId);
+    const borrowRequest = await BorrowRequest.findById(id);
     if (!borrowRequest || borrowRequest.status !== "confirmed") {
       return res.status(404).json({ message: "Borrow request not found or already returned" });
     }

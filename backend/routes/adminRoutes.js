@@ -1,12 +1,12 @@
 const express = require("express");
 const router = express.Router();
-const { isAdmin } = require("../middleware/roleMiddleware");
+const { allowRoles } = require("../middlewares/roleMiddleware");
 const adminController = require("../controllers/adminController");
 
 // Admin routes
-router.post("/add-book", isAdmin, adminController.addBook);
-router.post("/add-student", isAdmin, adminController.addStudent);
-router.put("/return-book/:id", isAdmin, adminController.returnBook);
-router.get("/borrowed-books", isAdmin, adminController.getAllBorrowedBooks);
+router.post("/add-book", allowRoles, adminController.addBook);
+router.post("/add-student", allowRoles, adminController.addStudent);
+router.put("/return-book/:id", allowRoles, adminController.returnBook);
+router.get("/borrowed-books", allowRoles , adminController.getBorrowedBooks);
 
 module.exports = router;
