@@ -1,7 +1,6 @@
 const Student = require("../models/Student");
 const Admin = require("../models/Admin");
 const jwt = require("jsonwebtoken");
-const bcrypt = require("bcryptjs");
 const { sendVerificationMail } = require("../services/emailService");
 const BorrowRequest = require("../models/BorrowRequest");
 const Book = require("../models/Book");
@@ -28,12 +27,13 @@ const loginStudent = async (req, res) => {
 
     if (!student) return res.status(404).json({ message: "Student not found" });
 
-    const isMatch = await bcrypt.compare(password, student.password);
-    if (!isMatch) return res.status(400).json({ message: "Invalid credentials" });
+    // Directly compare the password without bcrypt
+    if (password !== student.password) {
+      return res.status(400).json({ message: "Invalid credentials" });
+    }
 
     const token = generateToken(student, "student");
 
-    // Strip password before sending
     const { password: _, ...studentInfo } = student.toObject();
 
     res.status(200).json({ token, student: studentInfo });
@@ -50,8 +50,10 @@ const loginAdmin = async (req, res) => {
 
     if (!admin) return res.status(404).json({ message: "Admin not found" });
 
-    const isMatch = await bcrypt.compare(password, admin.password);
-    if (!isMatch) return res.status(400).json({ message: "Invalid credentials" });
+    // Directly compare the password without bcrypt
+    if (password !== admin.password) {
+      return res.status(400).json({ message: "Invalid credentials" });
+    }
 
     const token = generateToken(admin, "admin");
 
