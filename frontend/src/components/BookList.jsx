@@ -1,15 +1,13 @@
-// src/components/Book/BookList.jsx
-
 import React, { useState } from "react";
 import { Filter, Search, BookOpen } from "lucide-react";
-import BookCard from "./bookCard";
+import BookCard from "./BookCard";
 
 /**
  * Props: {
  *   books: Book[];
  * }
  */
-const BookList = ({ books }) => {
+const BookList = ({ books = [] }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
 
@@ -19,13 +17,15 @@ const BookList = ({ books }) => {
       book.author.toLowerCase().includes(searchTerm.toLowerCase()) ||
       book.isbn.toLowerCase().includes(searchTerm.toLowerCase());
 
-    const matchesStatus = statusFilter === "all" || book.status === statusFilter;
+    const matchesStatus =
+      statusFilter === "all" || book.status === statusFilter;
 
     return matchesSearch && matchesStatus;
   });
 
   return (
-    <div>
+      <div className="flex flex-col flex-grow w-full min-h-0 overflow-auto px-4 md:px-8 pb-">
+
       {/* Header */}
       <div className="mb-6 flex flex-col md:flex-row md:items-center md:justify-between space-y-3 md:space-y-0">
         <div>
@@ -36,7 +36,7 @@ const BookList = ({ books }) => {
 
       {/* Filters */}
       <div className="mb-6 flex flex-col md:flex-row justify-between space-y-3 md:space-y-0">
-        <div className="relative max-w-md w-full">
+        <div className="relative w-full max-w-xl">
           <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
             <Search size={18} className="text-gray-400" />
           </div>

@@ -2,8 +2,8 @@
 
 import React from "react";
 import { Book } from "lucide-react";
-import Card from "../ui/Card";
-import Button from "../ui/Button";
+import Card from "./ui/Card";
+import Button from "./ui/Button";
 
 /**
  * Props: {
@@ -55,20 +55,14 @@ const BookCard = ({ book }) => {
             <p className="text-xs text-gray-500">ISBN</p>
             <p className="text-sm font-medium">{book.isbn}</p>
           </div>
-          <div>
-            <p className="text-xs text-gray-500">Category</p>
-            <p className="text-sm font-medium">{book.category}</p>
-          </div>
+        
         </div>
 
         {book.status === "borrowed" && (
           <div className="mt-4">
             <p className="text-xs text-gray-500">Borrowed By</p>
             <p className="text-sm font-medium">{book.borrowedBy}</p>
-            <p className="text-xs text-gray-500 mt-1">Due Date</p>
-            <p className="text-sm font-medium">
-              {book.dueDate ? new Date(book.dueDate).toLocaleDateString() : "N/A"}
-            </p>
+           
           </div>
         )}
       </div>
