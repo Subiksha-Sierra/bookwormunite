@@ -11,22 +11,60 @@ function Home() {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const navigate = useNavigate();
 
-  const handleLoginSubmit = (e) => {
+  // Mock API call to simulate login verification
+  const mockLoginApi = (username, password) => {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        // Simulate successful login if username is 'student' and password is 'password'
+        if (username === "student" && password === "password") {
+          resolve({ success: true, message: "Login successful!" });
+        } else {
+          reject({ success: false, message: "Invalid username or password." });
+        }
+      }, 1000); // 1 second delay to simulate API response
+    });
+  };
+
+  const handleLoginSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitted(true);
-
-    if (username.trim() === "" && password.trim() === "") {
+  
+    if (!username || !password) {
       setErrorMessage("Please fill in both username and password.");
-    } else if (username.trim() === "") {
-      setErrorMessage("Please fill in the username.");
-    } else if (password.trim() === "") {
-      setErrorMessage("Please fill in the password.");
-    } else {
+      return;
+    }
+  
+    try {
+      const response = await fetch("http://localhost:5000/student/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ username, password })
+      });
+  
+      const data = await response.json();
+  
+      if (!response.ok) {
+        setErrorMessage(data.message || "Login failed");
+        return;
+      }
+  
+      // Optional: store token (e.g. localStorage)
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("student", JSON.stringify(data.student));
+  
+      // Clear errors and navigate
       setErrorMessage("");
       alert("Student login successful!");
       navigate("/books");
+  
+    } catch (err) {
+      setErrorMessage("Server error. Please try again.");
+      console.error(err);
     }
   };
+  
 
   const handleClose = () => {
     setShowLogin(false);

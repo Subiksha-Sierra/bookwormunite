@@ -1,4 +1,3 @@
-// src/pages/AdminLogin.jsx
 import React, { useState } from "react";
 import { ShieldCheck, ArrowRight, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -11,21 +10,41 @@ function AdminLogin() {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const navigate = useNavigate();
 
-  const handleLoginSubmit = (e) => {
+  // Mock API function
+  const mockAdminLogin = (username, password) => {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        if (username === "admin" && password === "admin123") {
+          resolve({ success: true, message: "Admin login successful!" });
+        } else {
+          reject({ success: false, message: "Invalid admin credentials." });
+        }
+      }, 1000); // 1 second delay
+    });
+  };
+
+  const handleLoginSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitted(true);
 
     if (!username || !password) {
       setErrorMessage("Please fill in both username and password.");
-    } else {
-      setErrorMessage("");
-      alert("Admin login successful!");
+      return;
+    }
+
+    setErrorMessage("");
+
+    try {
+      const res = await mockAdminLogin(username, password);
+      alert(res.message);
       navigate("/admin");
+    } catch (err) {
+      setErrorMessage(err.message);
     }
   };
 
   const handleClose = () => {
-    navigate("/"); // Go back to home page
+    navigate("/"); // Back to home
   };
 
   return (
