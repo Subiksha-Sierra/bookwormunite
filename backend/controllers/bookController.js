@@ -1,31 +1,41 @@
-const Book = require("../models/bookModel");
+const Book = require("../models/Book");
 
+// Get all books
 const getAllBooks = async (req, res) => {
   try {
     const books = await Book.find();
     res.status(200).json(books);
   } catch (error) {
-    res.status(500).json({ message: "Error fetching books" });
+    res.status(500).json({ message: "Failed to fetch books", error: error.message });
   }
 };
 
-const addBook = async (req, res) => {
+// Get only available books
+const getAvailableBooks = async (req, res) => {
   try {
-    const { title, author, isbn } = req.body;
-    const book = new Book({ title, author, isbn });
-
-    await book.save();
-    res.status(201).json({ message: "Book added successfully", book });
+    const books = await Book.find({ isAvailable: true });
+    res.status(200).json(books);
   } catch (error) {
-    res.status(500).json({ message: "Error adding book" });
+    res.status(500).json({ message: "Failed to fetch available books", error: error.message });
   }
 };
 
-const deleteBook = async (req, res) =>{
-    try{
-        const { isbn } = req.body;
+// Get a single book by ID
+const getBookById = async (req, res) => {
+  try {
+    const { bookId } = req.params;
+    const book = await Book.findById(bookId);
 
-    }
-}
+    if (!book) return res.status(404).json({ message: "Book not found" });
 
-module.exports = { getAllBooks, addBook };
+    res.status(200).json(book);
+  } catch (error) {
+    res.status(500).json({ message: "Failed to fetch book", error: error.message });
+  }
+};
+
+module.exports = {
+  getAllBooks,
+  getAvailableBooks,
+  getBookById,
+};
